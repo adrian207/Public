@@ -10,8 +10,8 @@
     Installs missing modules for:  Active Directory Online, Lync Online, SharePointOnline, ExchangeOnline and Office 365 for an organization.
 .PARAMETER SkipSharePoint
     If no DNS for SharePoint, add this to skip SharePoint options
-.PARAMETER SkipLync
-    If no DNS for Lync, add this to skip Lync options
+.PARAMETER SkipSkype
+    If no DNS for Skype, add this to skip Skype options
 .PARAMETER SkipExchange
     If no DNS for Exchange, add this to skip Exchange options
 .PARAMETER SkipSecurity
@@ -19,9 +19,20 @@
 .PARAMETER Path
     Enter alternate path to save files to, defualt is users local app data
 .EXAMPLE
+    Test for encrypted credential files, load all Office 365 products
+    
+    Get-O365EncryptedCredentials.ps1
+.EXAMPLE
+    Test for encrypted credential files, skip loading Skype for Business
+    
+    Get-O365EncryptedCredentials.ps1
 .NOTES
     Created by Chris Lee
     Date April 20, 2017
+
+    Some code pulled from:
+        PoShConnectToOffice365.ps1
+        Created by DJacobs for HBS.NET
 .LINK   
 #>
 
@@ -31,7 +42,7 @@ Param
     [switch]
     $SkipSharePoint,
     [switch]
-    $SkipLync,
+    $SkipSkype,
     [switch]
     $SkipExchange,
     [switch]

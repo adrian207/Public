@@ -25,6 +25,10 @@
 .NOTES
     Created by Chris Lee
     Date April 20, 2017
+
+    Some code pulled from:
+        PoShConnectToOffice365.ps1
+        Created by DJacobs for HBS.NET
 .LINK   
 #>
 
