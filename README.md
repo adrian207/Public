@@ -1,5 +1,8 @@
 # Public
-Public shares of scripts created in free time and employer
+Public shares of scripts created in free time and for needs in career.
+
+I will attempt to do complete Get-Help Syntax for all scripts posted.
+I try to ensure credit given for any code taken from others and request same be followed for my code.
 
 Currently scripts are broken into target types:
 
@@ -11,8 +14,8 @@ O365 (Office365)
     
     Get-O365EncryptedCredentials.ps1
         Check for O365 user and credential files:
-        o user.txt - Contains O365 UPN (Optional)
-        o cred.txt - Contains encrypted O365 password (Required)
+            o user.txt - Contains O365 UPN (Optional)
+            o cred.txt - Contains encrypted O365 password (Required)
 
         Execute PoSH connect to validate credentials
         Installs missing modules for:  Active Directory Online, Lync Online, SharePointOnline, ExchangeOnline and Office 365 for an organization.
