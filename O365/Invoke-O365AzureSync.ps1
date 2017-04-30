@@ -53,6 +53,7 @@ Param
         }
     Test-Verbose
 ## endregion
+
 Write-Verbose -Message "Opening PSSession to $Server"
 $Session = New-PSSession -ComputerName $Server
 Write-Verbose -Message "Checking for ADSync.psd1 at $ADSyncPath"
