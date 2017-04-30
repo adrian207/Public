@@ -1,10 +1,10 @@
 # Public
-Public shares of scripts created in free time and for needs in career.
+Public sharing of scripts created in free my time and for needs in career.
 
 I will attempt to do complete Get-Help Syntax for all scripts posted.
 I try to ensure credit given for any code taken from others and request same be followed for my code.
 
-Currently scripts are broken into target types:
+Current Repo structure (Note if you make changes and a script calls on an other it may break the script)
 
 ActiveDirectory
 
