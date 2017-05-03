@@ -8,7 +8,9 @@
 .NOTES
     Created by Chris Lee
     Date April 20, 2017
-.LINK   
+.LINK 
+    GitHub: https://github.com/clee1107/Public/blob/master/O365/Remove-O365PSSession.ps1
+    Blogger:   
 #>
 
 #################################
