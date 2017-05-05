@@ -14,7 +14,7 @@
     Date April 20, 2017
 .LINK 
     GitHub: https://github.com/clee1107/Public/blob/master/O365/Set-O365EncryptedCredentials.ps1
-    Blogger:  
+    Blogger: http://www.myitresourcebook.com/2017/05/set-o365encryptedcredentialsps1.html
 #>
 
 [Cmdletbinding()]
