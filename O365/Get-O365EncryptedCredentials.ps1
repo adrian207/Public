@@ -35,7 +35,7 @@
         Created by DJacobs for HBS.NET
 .LINK
     GitHub: https://github.com/clee1107/Public/blob/master/O365/Get-O365EncryptedCredentials.ps1
-    Blogger: 
+    Blogger: http://www.myitresourcebook.com/2017/05/get-o365encryptedcredentialsps1.html
 #>
 
 [Cmdletbinding()]
