@@ -5,6 +5,8 @@
     Check for O365 user and credential files:
         o user.txt - Contains O365 UPN
         o cred.txt - Contains encrypted O365 password
+
+    Load saved Office 365 Credentials from Set-O365EncryptedCredentials.ps1 and either pass or test present
 .PARAMETER Test
     Use switch to confirm user name and password loaded from saved credentials
 .PARAMETER Path
@@ -25,7 +27,7 @@
     Created by Chris Lee
     Date May 9th, 2017
 .LINK
-    GitHub: 
+    GitHub: https://github.com/clee1107/Public/blob/master/O365/Get-O365EncryptedCredentials.ps1
     Blogger: 
 #>
 
