@@ -3,8 +3,8 @@
     Load saved Office 365 Credentials from Set-O365EncryptedCredentials.ps1 and either pass or test present
 .DESCRIPTION
     Check for O365 user and credential files:
-        o user.txt - Contains O365 UPN (Optional)
-        o cred.txt - Contains encrypted O365 password (Required)
+        o user.txt - Contains O365 UPN
+        o cred.txt - Contains encrypted O365 password
 .PARAMETER Test
     Use switch to confirm user name and password loaded from saved credentials
 .PARAMETER Path
@@ -43,11 +43,11 @@ Param
 #################################
 
 ##Load User name
-    Write-Verbose -Message "Checking for optional user file"
+    Write-Verbose -Message "Checking for user file"
     IF (!(Test-Path -Path "$Path\O365user.txt"))
         {
             Write-Host -ForegroundColor Red "No user file will be prompted for username for all scripts"
-            Write-Host -ForegroundColor Red "Consider running Set-O365EncryptedCredentials again and provide O365 UPN"
+            Write-Error -Message "Run Set-O365EncryptedCredentials and provide O365 UPN"
         }
     else
         {
@@ -60,7 +60,7 @@ Param
     IF (!(Test-Path -Path "$Path\O365cred.txt"))
         {
             Write-Host -ForegroundColor Red "No password file found"
-            Write-Host -ForegroundColor Red "Run Set-O365EncryptedCredentials"
+            Write-Error -Message "Run Set-O365EncryptedCredentials and provide O365 Password"
         }
     else
         {
