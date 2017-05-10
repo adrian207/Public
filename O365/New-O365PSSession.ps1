@@ -29,7 +29,9 @@
     Some code pulled from:
         PoShConnectToOffice365.ps1
         Created by DJacobs for HBS.NET
-.LINK   
+.LINK
+    GitHub: https://github.com/clee1107/Public/blob/master/O365/New-O365PSSession.ps1
+    Blogger:    
 #>
 
 [Cmdletbinding()]
