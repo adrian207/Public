@@ -92,66 +92,73 @@ Param
     Write-Verbose -Message "Creating Credential varialble from files"
     $Cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $AdminName, $Pass
 
+## Check for O365 Component Modules
+    ## MSOnline
+        Try 
+            {
+                Write-Verbose -Message "$(Get-Date -f o) Importing Module MSOline"
+                Import-Module MSOnline -DisableNameChecking -ErrorAction Stop
+            }
+        Catch 
+            {
+                Write-Verbose -Message "MSOnline Module not found."
+                Throw  "MSOnline Module not found. Must install to continue.  Can be installed via PowerShell script: Install-O365Modules.PS1"
+            }
+    ## SharePoint Online
+        Try 
+            {
+                Write-Verbose -Message "$(Get-Date -f o) Importing SharePoint Module"
+                Import-Module Microsoft.Online.SharePoint.PowerShell -DisableNameChecking -ErrorAction Stop
+            }
+        Catch 
+            {
+                Write-Verbose -Message "SharePoint Online Module not found."
+                Write-Error  "SharePoint Online Module not found, will be skiped.  Can be installed via PowerShell script: Install-O365Modules.PS1"
+                $SkipSharePoint = $True
+            }
+    ## Skype for Business
+        Try 
+            {
+                Write-Verbose -Message "$(Get-Date -f o) Importing Skype for Business Module"
+                Import-Module SkypeOnlineConnector -DisableNameChecking -ErrorAction Stop
+            }
+        Catch 
+            {
+                Write-Verbose -Message "Skype for Business Module not found."
+                Write-Error  "Skype for Business Module not found, will be skiped.  Can be installed via PowerShell script: Install-O365Modules.PS1"
+                $SkipSkype = $True
+            }
+
+
 ## Connect of O365 with error checks
     ##Connect MSOnline (Azure Active Directory)
         Write-Verbose -Message "Connecting MSOnline (Office 365)"
         ## Office 365
-            Try 
+            Try #Check if already connected to MSOnline
                 {
                     Write-Verbose -Message "Checking if already connected to MSOnline (Azure Active Directory)"
                     Get-MsolDomain -ErrorAction Stop > $null
                     Write-Host -ForegroundColor Green "Already Connected to MSOnline (Azure Active Directory)"
                 }
-            Catch
+            Catch #Connect to MSOline
                 {
-                    Try 
-                        {
-                            Write-Verbose -Message "Not connected to MSOnline (Azure Active Directory)"
-                            Write-Verbose -Message "$(Get-Date -f o) Importing Module MSOline"
-                            Import-Module MSOnline -DisableNameChecking -ErrorAction Stop
-                            Write-Verbose -Message "$(Get-Date -f o) Connecting to MSOL Service"
-                        }
-                    Catch 
-                        {
-                            Write-Verbose -Message "MSOnline Module not found."
-                            Write-Verbose -Message 'Check if PowerShell session running in "run as administrator"'
-                            If (((whoami /all | select-string S-1-16-12288) -ne $null) -eq $false)
-                                {
-                                    Write-Error 'PowerShell must be ran in "run as administrator to install MSOnline module"'
-                                    Exit
-                                }
-                            else 
-                                {
-                                    Write-Host -ForegroundColor Yellow "Installing MSOnline Module"
-                                    Install-Module MSOnline
-                                    Try 
-                                        {
-                                            Write-Verbose -Message "$(Get-Date -f o) Importing Module MSOline"
-                                            Import-Module MSOnline -DisableNameChecking -ErrorAction Stop
-                                        }
-                                    Catch 
-                                        {
-                                            Write-Error -Message "Error. Cannot import module 'MSOnline' because $_" -ErrorAction Stop
-                                        }
-                                }
-                        }
-                    Try 
+                    Try #Try to connect to MSOnline
                         {
                             Write-Verbose -Message "Connecting MsolService"
                             Connect-MsolService -Credential $cred -ErrorAction Stop
                             Get-MsolDomain -ErrorAction Stop > $null
                             Write-Host -ForegroundColor Green "Connected to MSOnline (Azure Active Directory)"
                         }
-                    Catch [Microsoft.Online.Administration.Automation.MicrosoftOnlineException] 
+                    Catch [Microsoft.Online.Administration.Automation.MicrosoftOnlineException] #Failed to connect bad credentials
                         {
                             Write-Error -Message "Error. Failed to Connect to MsolService because bad username or password." -ErrorAction Stop
                         }
-                    Catch 
+                    Catch #Failed to connect other then credential issue
                         {
                             #$_ | fl * -Force
                             Write-Error -Message "Error. Failed to connect to MsolService because $_" -ErrorAction Stop
                         }
-                    if ($ShowProgress) 
+                    if ($ShowProgress) #Present MSOL Domains connected to
                         {
                             Write-Verbose -Message "$(Get-Date -f o) Listing MSOL Domains"
                             Get-MsolDomain | ft -AutoSize
@@ -162,55 +169,35 @@ Param
     ##Connect SharePoint Online
         Write-Verbose -Message "Connecting SharePoint Online"
         ##SharePoint
-            if (-not $SkipSharePoint) 
+            if (-not $SkipSharePoint)
                 {
-                    Try 
+                    Try #Check if already connected to Sharepoint Online
                         {
+                            Write-Verbose -Message "Checking if already connected to SharePoint Online"
+                            Get-SPOsite -ErrorAction Stop > $null
+                            Write-Host -ForegroundColor Green "Already Connected to SharePoint Online"
+                        }
+                    Catch #Connect to SharePoint Online
+                        {
+                            Write-Verbose -Message "Not connected to SharePoint Online"
                             Try 
                                 {
-                                    Write-Verbose -Message "Checking if already connected to SharePoint Online"
-                                    Get-SPOsite -ErrorAction Stop > $null
-                                    Write-Host -ForegroundColor Green "Already Connected to SharePoint Online"
+                                    Write-Verbose -Message "$(Get-Date -f o) Connecting SP Online Service"
+                                    Connect-SPOService -Url https://$spAdminName-admin.sharepoint.com -Credential $cred -ErrorAction Stop
+                                    Get-SPOSite -ErrorAction Stop > $null
+                                    Write-Host -ForegroundColor Green "Connected to SharePoint Online"
                                 }
-                            Catch
+                            Catch 
                                 {
-                                    Write-Verbose -Message "Not connected to SharePoint Online"
-                                    Write-Verbose -Message "$(Get-Date -f o) Importing SharePoint Module"
-                                    Import-Module Microsoft.Online.SharePoint.PowerShell -DisableNameChecking -ErrorAction Stop
-                                    $spAdminName = ((Get-MsolDomain | where Name -match 'onmicrosoft').Name).split('.')[0]
-                                    Write-Verbose -Message "$(Get-Date -f o) This is the SP Admin Domain: '$spAdminName'"
+                                    Write-Error -Message "Error. Cannot connect to 'SPOService' because $_" -ErrorAction Stop
                                 }
-                        }
-                    Catch 
-                        {
-                            Write-Verbose -Message "SharePoint Online Module not found."
-                            $temp = Read-Host "Launch browser to download SharePoint Online Management Shell? [Y]/N"
-                            If ($temp -eq $null -OR $temp -eq "" -OR $temp -eq "Y")
+                            if ($ShowProgress) 
                                 {
-                                    Start-Process https://www.microsoft.com/en-us/download/details.aspx?id=35588
-                                    exit      
-                                }
-                            Else
-                                {
-                                    Write-Error -Message "Error. Failed to import the module 'Microsoft.Online.SharePoint.PowerShell' because $_" -ErrorAction Stop
-                                }
+                                    Write-Verbose -Message "$(Get-Date -f o) Listing SP Online Sites"
+                                    Get-SPOSite | ft -AutoSize
+                                } 
                         }
-                    Try 
-                        {
-                            Write-Verbose -Message "$(Get-Date -f o) Connecting SP Online Service"
-                            Connect-SPOService -Url https://$spAdminName-admin.sharepoint.com -Credential $cred -ErrorAction Stop
-                            Get-SPOSite -ErrorAction Stop > $null
-                            Write-Host -ForegroundColor Green "Connected to SharePoint Online"
-                        }
-                    Catch 
-                        {
-                            Write-Error -Message "Error. Cannot connect to 'SPOService' because $_" -ErrorAction Stop
-                        }
-                    if ($ShowProgress) 
-                        {
-                            Write-Verbose -Message "$(Get-Date -f o) Listing SP Online Sites"
-                            Get-SPOSite | ft -AutoSize
-                        }
+                    
                 } 
             else   
                 {
@@ -241,46 +228,29 @@ Param
                                         Write-Verbose -Message "All broken Skype for Business sessions removed"
                                     }
                             }
-                        else 
+                    }
+                Catch 
+                    {
+                        Try 
                             {
-                                Write-Verbose -Message "$(Get-Date -f o) Importing Module Skype for Business Online Connector"
-                                Import-Module SkypeOnlineConnector -DisableNameChecking -ErrorAction Stop
+                                Write-Verbose -Message "$(Get-Date -f o) Creating Skype for Business Session"
+                                $skypeSession = New-CsOnlineSession -Credential $cred -ErrorAction Stop
+                            }
+                        Catch 
+                            {
+                                Write-Warning "$(Get-Date -f o) Error. Cannot connect to Skype for Business because $_"
+                            }
+                        Try 
+                            {
+                                Write-Verbose -Message "$(Get-Date -f o) Importing PSSession for Skype for Business"
+                                $null = Import-PSSession $skypeSession -AllowClobber -ErrorAction Stop
+                                Write-Verbose -Message "Successfully imported PSSession for Skype for Business."
+                            }
+                        Catch 
+                            {
+                                Write-Error -Message "Failed to import PSSession for Skype for Business." -ErrorAction Continue
                             }
                     }
-                Catch 
-                    {
-                        Write-Verbose -Message "SkypeOnlineConnector Module not found."
-                        $temp = Read-Host "Launch browser to download Skype for Business Online, Windows PowerShell Module? [Y]/N"
-                            If ($temp -eq $null -OR $temp -eq "" -OR $temp -eq "Y")
-                                {
-                                    Start-Process https://www.microsoft.com/en-us/download/details.aspx?id=39366
-                                    exit      
-                                }
-                            Else
-                                {
-                                    Write-Error -Message "Error. Failed to import the module 'SkypeOnlineConnector' because $_" -ErrorAction Stop
-                                }
-                    }
-                Try 
-                    {
-                        Write-Verbose -Message "$(Get-Date -f o) Creating Skype for Business Session"
-                        $skypeSession = New-CsOnlineSession -Credential $cred -ErrorAction Stop
-                    }
-                Catch 
-                    {
-                        Write-Warning "$(Get-Date -f o) Error. Cannot connect to Skype for Business because $_"
-                    }
-                Try 
-                    {
-                        Write-Verbose -Message "$(Get-Date -f o) Importing PSSession for Skype for Business"
-                        $null = Import-PSSession $skypeSession -AllowClobber -ErrorAction Stop
-                        Write-Verbose -Message "Successfully imported PSSession for Skype for Business."
-                    }
-                Catch 
-                    {
-                        Write-Error -Message "Failed to import PSSession for Skype for Business." -ErrorAction Continue
-                    }
-            
                 if ($ShowProgress) 
                     {
                         if (Get-Command -Name Get-CsMeetingConfiguration -ErrorAction SilentlyContinue) 
@@ -292,14 +262,14 @@ Param
                                 Write-Warning -Message "Error. Did not connect to Skype for Business."
                             }
                     }
-                    If ((Get-PSSession | Where-Object {$_.ComputerName -like "admin1a*" -AND $_.State -like "Opened"}))
-                        {
-                            Write-Host -ForegroundColor Green "Connected to Skype for Business"
-                        }
-                    else 
-                        {
-                            Write-Host -ForegroundColor Red "Failed to connect to Skype for Business"
-                        }
+                If ((Get-PSSession | Where-Object {$_.ComputerName -like "admin1a*" -AND $_.State -like "Opened"}))
+                    {
+                        Write-Host -ForegroundColor Green "Connected to Skype for Business"
+                    }
+                else 
+                    {
+                        Write-Host -ForegroundColor Red "Failed to connect to Skype for Business"
+                    }
             } 
         else 
             {
