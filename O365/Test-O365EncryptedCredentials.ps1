@@ -20,7 +20,7 @@
         PoShConnectToOffice365.ps1
         Created by DJacobs for HBS.NET
 .LINK
-    GitHub: https://github.com/clee1107/Public/blob/master/O365/Test-O365EncryptedCredentials.ps1
+    GitHub:  https://github.com/clee1107/Public/blob/master/O365/Test-O365EncryptedCredentials.ps1
     Blogger: http://www.myitresourcebook.com/2017/05/test-o365encryptedcredentialsps1.html
 #>
 
