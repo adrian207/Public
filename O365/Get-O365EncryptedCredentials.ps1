@@ -5,8 +5,11 @@
     Check for O365 user and credential files:
         o user.txt - Contains O365 UPN
         o cred.txt - Contains encrypted O365 password
+
+    Load saved Office 365 Credentials from Set-O365EncryptedCredentials.ps1 and either pass or test present
 .PARAMETER Test
-    Use switch to confirm user name and password loaded from saved credentials
+    $fale to operate in "Pass-thru Mode" (Default)
+    $true to validate user name and password loaded from saved credentials files
 .PARAMETER Path
     Enter alternate path to save files to, defualt is users local app data
 .EXAMPLE
@@ -25,8 +28,8 @@
     Created by Chris Lee
     Date May 9th, 2017
 .LINK
-    GitHub: 
-    Blogger: 
+    GitHub: https://github.com/clee1107/Public/blob/master/O365/Get-O365EncryptedCredentials.ps1
+    Blogger: http://www.myitresourcebook.com/2017/05/get-o365encryptedcredentialsps1_9.html
 #>
 
 [Cmdletbinding()]
@@ -46,8 +49,9 @@ Param
     Write-Verbose -Message "Checking for user file"
     IF (!(Test-Path -Path "$Path\O365user.txt"))
         {
-            Write-Host -ForegroundColor Red "No user file will be prompted for username for all scripts"
-            Write-Error -Message "Run Set-O365EncryptedCredentials and provide O365 UPN"
+            Write-Host -ForegroundColor Red "No user file found"
+            Write-Error -Message "No user file found"
+            Exit
         }
     else
         {
@@ -60,7 +64,8 @@ Param
     IF (!(Test-Path -Path "$Path\O365cred.txt"))
         {
             Write-Host -ForegroundColor Red "No password file found"
-            Write-Error -Message "Run Set-O365EncryptedCredentials and provide O365 Password"
+            Write-Error -Message "No password file found"
+            Exit
         }
     else
         {
@@ -73,17 +78,17 @@ Param
     $Cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $AdminName, $Pass
 
 ## Check if testing or passing credentials
-Write-Verbose -Message "Check if in test mode or pass-thru mode"
-If ($test)
-    {
-        Write-Verbose -Message "Test mode"
-        ## Display loaded credentias
-            Write-Host "Username: $($Cred.UserName)"
-            Write-Host "Password: $($Cred.Password)"
-    }
-Else 
-    {
-        Write-Verbose -Message "Pass-thru mode"
-        ## Passing Cred variable to other script
-            $Cred
-    }
+    Write-Verbose -Message "Check if in test mode or pass-thru mode"
+    If ($test)
+        {
+            Write-Verbose -Message "Test mode"
+            ## Display loaded credentias
+                Write-Host "Username: $($Cred.UserName)"
+                Write-Host "Password: $($Cred.Password)"
+        }
+    Else 
+        {
+            Write-Verbose -Message "Pass-thru mode"
+            ## Passing Cred variable to other script
+                $Cred
+        }
