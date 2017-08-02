@@ -8,7 +8,8 @@
 
     Load saved Office 365 Credentials from Set-O365EncryptedCredentials.ps1 and either pass or test present
 .PARAMETER Test
-    Use switch to confirm user name and password loaded from saved credentials
+    $fale to operate in "Pass-thru Mode" (Default)
+    $true to validate user name and password loaded from saved credentials files
 .PARAMETER Path
     Enter alternate path to save files to, defualt is users local app data
 .EXAMPLE
