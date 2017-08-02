@@ -21,7 +21,7 @@
         Created by DJacobs for HBS.NET
 .LINK
     GitHub: https://github.com/clee1107/Public/blob/master/O365/Test-O365EncryptedCredentials.ps1
-    Blogger:
+    Blogger: http://www.myitresourcebook.com/2017/05/test-o365encryptedcredentialsps1.html
 #>
 
 [Cmdletbinding()]
@@ -36,14 +36,20 @@ Param
 #################################
 
 ## Get Credentials
-Write-Verbose -Message "Calling Get-O365EnccryptedCredentials.ps1 to load saved O365 credentials."
-$Cred = Get-O365EncryptedCredentials.ps1 -Path $Path
-If ($Cred -ne $null -OR $Cred -ne "")
-    {
-        Write-Host -ForegroundColor Green "Encrypted Credentials loaded"
-        Write-Verbose -Message "Received from Get-O365EncryptedCredentials:"
-        Write-Verbose -Message "Username: $($Cred.UserName)"
-    }
+    Write-Verbose -Message "Calling Get-O365EnccryptedCredentials.ps1 to load saved O365 credentials."
+    $Cred = Get-O365EncryptedCredentials.ps1 -Path $Path
+    If ($Cred.username -eq $null -OR $Cred.username -eq "")
+        {
+            Write-Host -ForegroundColor Red "Failed to load Encrypted Credentials"
+            Write-Error -Message "Failed to load Encrypted Credentials"
+            Exit
+        }
+    Else
+        {
+            Write-Host -ForegroundColor Green "Encrypted Credentials loaded"
+            Write-Verbose -Message "Received from Get-O365EncryptedCredentials:"
+            Write-Verbose -Message "Username: $($Cred.UserName)"
+        }
 
 ## Connect of O365 with error checks
     ##Connect MSOnline (Azure Active Directory)
@@ -52,7 +58,7 @@ If ($Cred -ne $null -OR $Cred -ne "")
             Try 
                 {
                     Write-Verbose -Message "$(Get-Date -f o) Importing Module MSOline"
-                    Import-Module MSOnline -DisableNameChecking -ErrorAction Stop
+                    Import-Module -Name MSOnline -DisableNameChecking -ErrorAction Stop
                     Write-Verbose -Message "$(Get-Date -f o) Imported Module MSOline"
                 }
             Catch 
@@ -93,7 +99,6 @@ If ($Cred -ne $null -OR $Cred -ne "")
                 }
             Catch 
                 {
-                    #$_ | fl * -Force
                     Write-Error -Message "Error. Failed to connect to MSOnline because $_" -ErrorAction Stop
                 }
 
