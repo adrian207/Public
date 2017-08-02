@@ -31,7 +31,7 @@
         Created by DJacobs for HBS.NET
 .LINK
     GitHub: https://github.com/clee1107/Public/blob/master/O365/New-O365PSSession.ps1
-    Blogger:    
+    Blogger:http://www.myitresourcebook.com/2017/08/new-o365pssessionps1.html
 #>
 
 [Cmdletbinding()]
@@ -93,7 +93,7 @@ Param
     $Cred = new-object -typename System.Management.Automation.PSCredential -argumentlist $AdminName, $Pass
 
 ## Check for O365 Component Modules
-    ## MSOnline
+    ## MSOnline (AzureAD)
         Try 
             {
                 Write-Verbose -Message "$(Get-Date -f o) Importing Module MSOline"

@@ -10,7 +10,7 @@
     Date April 20, 2017
 .LINK 
     GitHub: https://github.com/clee1107/Public/blob/master/O365/Remove-O365PSSession.ps1
-    Blogger:   
+    Blogger:http://www.myitresourcebook.com/2017/08/httpsgithubcomclee1107publicblobmastero.html
 #>
 
 #################################

@@ -23,8 +23,9 @@
         PoShConnectToOffice365.ps1
         Created by DJacobs for HBS.NET
 .LINK
-    GitHub: 
-    Blogger: 
+    GitHub: https://github.com/clee1107/Public/blob/master/O365/Install-O365Modules.ps1
+    Blogger: http://www.myitresourcebook.com/2017/08/install-o365modulesps1.html
+
 #>
 
 [Cmdletbinding()]
