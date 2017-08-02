@@ -1,23 +1,20 @@
 <#
 .SYNOPSIS
-    Check for O365 user and credential files, Test Connect to O365
+    Check for O365 components are present and attempt to install or direct to installers.
 .DESCRIPTION
-    Check for O365 user and credential files:
-        o user.txt - Contains O365 UPN (Optional)
-        o cred.txt - Contains encrypted O365 password (Required)
-
-    Execute PoSH connect to validate credentials
-    Installs missing modules for:  Active Directory Online, Lync Online, SharePointOnline, ExchangeOnline and Office 365 for an organization.
-.PARAMETER Path
-    Enter alternate path to save files to, defualt is users local app data
+    Check for O365 components are present and attempt to install or direct to installers.
+    Installs missing modules for:  
+        o Active Directory Online
+        o Skype for Business Online
+        o SharePointOnline
 .EXAMPLE
-    Test for encrypted credential files, load all Office 365 products
+    Standard execution
     
-    Get-O365EncryptedCredentials.ps1
+    Install-O365Modules.ps1
 .EXAMPLE
-    Test for encrypted credential files, skip loading Skype for Business
+    Verbose messages for troubleshooting installation
     
-    Get-O365EncryptedCredentials.ps1 -skipSkype
+    Install-O365Modules.ps1 -Verbose
 .NOTES
     Created by Chris Lee
     Date April 20, 2017
@@ -33,8 +30,6 @@
 [Cmdletbinding()]
 Param
 (
-    [String]
-    $Path = [Environment]::GetFolderPath("LocalApplicationData")
 )
 
 #################################
