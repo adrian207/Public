@@ -29,8 +29,10 @@ Param
 (
     [string]
     $TaskPath = "\",
+    [parameter(Mandatory=$TRUE)]
     [string]
     $TaskName,
+    [parameter(Mandatory=$TRUE)]
     [string]
     $Server
 )
